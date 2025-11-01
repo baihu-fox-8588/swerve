@@ -53,11 +53,11 @@ public class Drivetrain {
         // Field-Oriented control
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d());
         
-        // ChassisSpeeds chassisSpeeds = ChassisSpeeds(xSpeed, ySpeed, rot);
+        // ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d());
 
         SwerveModuleState[] states = Constants.kinematics.toSwerveModuleStates(chassisSpeeds);
-        SwerveDriveKinematics .desaturateWheelSpeeds(states, Constants.maxSpeed);
-        
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.maxSpeed);
+
         for(int i = 0; i < 4; i++) swerveModule[i].setDesiredState(states[i]);
     }
 }

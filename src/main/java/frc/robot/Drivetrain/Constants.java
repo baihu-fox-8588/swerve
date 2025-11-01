@@ -19,11 +19,11 @@ public class Constants {
     public static final double GearRatio = 6.86;
     public static final double WheelCirc = Inches.of(3).times(Math.PI).in(Meters);
 
-    public static final double PositionConversionFactor = 1 / GearRatio * WheelCirc;
+    public static final double PositionConversionFactor = 1.0 / GearRatio * WheelCirc;
     public static final double VelocityConversionFactor = PositionConversionFactor / 60;
 
     public static final double TurnGearRatio = 12.8;
-    public static final double TurnPositionConversionFactor = 1 / TurnGearRatio * 2 * Math.PI;
+    public static final double TurnPositionConversionFactor = 1.0 / TurnGearRatio * 2.0 * Math.PI;
     public static final double TurnVelocityConversionFactor = TurnPositionConversionFactor / 60;
 
     public static final double maxSpeed = 3.5;

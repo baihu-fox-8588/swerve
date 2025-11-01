@@ -67,10 +67,9 @@ public class SwerveModule {
     }
 
     public void setDesiredState(SwerveModuleState state) {
+        state.optimize(new Rotation2d(turnEncoder.getPosition()));
+
         driveMotor.set(state.speedMetersPerSecond);
-        turnMotor.set(Constants.TurnPID.calculate(
-            turnEncoder.getPosition(),
-            state.angle.getRadians()
-        ));
+        turnMotor.set(Math.max(-1.0, Math.min(Constants.TurnPID.calculate(turnEncoder.getPosition(), state.angle.getRadians()), 1.0)));
     }
 }
