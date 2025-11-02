@@ -4,17 +4,30 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Drivetrain.Drivetrain;
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  private Command autonomousCommand;
+  private final RobotContainer robotContainer;
 
-  private final RobotContainer m_robotContainer;
+  private Drivetrain drivetrain;
+
+  private Joystick joystick;
 
   public Robot() {
-    m_robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer();
+  }
+
+  @Override
+  public void robotInit() {
+    joystick = new Joystick(0);
+
+    drivetrain = Drivetrain.getInstance();
   }
 
   @Override
@@ -31,30 +44,53 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledExit() {}
 
+  private Timer initAngleCorrection;
+  private boolean hasAngleCorrected;
+
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    autonomousCommand = robotContainer.getAutonomousCommand();
 
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (autonomousCommand != null) {
+      autonomousCommand.schedule();
+    }
+
+    initAngleCorrection = new Timer();
+    initAngleCorrection.reset();
+    initAngleCorrection.start();
+
+    hasAngleCorrected = false;
+  }
+  
+  @Override
+  public void autonomousPeriodic() {
+    if (!hasAngleCorrected) {
+      if (initAngleCorrection.hasElapsed(0.5)) {
+        drivetrain.drive(0.0, 0.0, 0.0);
+        drivetrain.initAngleCorrection();
+        hasAngleCorrected = true;
+      }
+      else drivetrain.drive(0.0, 0.2, 0.0);
+    }
+    else {
+
     }
   }
-
-  @Override
-  public void autonomousPeriodic() {}
 
   @Override
   public void autonomousExit() {}
 
   @Override
   public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
     }
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    drivetrain.drive(joystick.getX(), joystick.getY(), joystick.getZ());
+  }
 
   @Override
   public void teleopExit() {}

@@ -14,7 +14,6 @@ public class Drivetrain {
     
     AHRS gyro;
 
-    // 使用 SwerveDrivePoseEstimator 做定位融合
     public SwerveDrivePoseEstimator PoseEstimator;
     
     public static Drivetrain drivetrain;
@@ -28,15 +27,14 @@ public class Drivetrain {
             );
         }
 
-        // 初始化陀螺儀
         gyro = new AHRS(NavXComType.kMXP_SPI);
         gyro.reset();
 
         // 初始化定位估算器
-        // 使用 kinematics 定義車輪相對位置
-        // gyro.getRotation2d() 作為初始方向
-        // getPosition() 取得每個模組的位置 (車輪轉角與轉速)
-        // Constants.InitialPose 定義機器人初始位置
+        // 1. kinematics: SwerveDriveKinematics 定義每個模組相對位置
+        // 2. gyro.getRotation2d(): 初始朝向
+        // 3. getPosition(): 每個模組的位置 (角度 + 編碼器位移)
+        // 4. Constants.InitialPose: 初始位姿 (位置 + 朝向)
         PoseEstimator = 
             new SwerveDrivePoseEstimator(
                 Constants.kinematics,
@@ -46,11 +44,20 @@ public class Drivetrain {
             );
     }
 
-    // 取得四個模組的位置 (SwerveModulePosition 包含角度和位移)
+    // 取得四個模組的位置
     public SwerveModulePosition[] getPosition() {
         SwerveModulePosition positions[] = new SwerveModulePosition[4];
-        for (int i = 0; i < 4; i++) positions[i] = swerveModule[i].getPosition();
+        for (int i = 0; i < 4; i++) 
+            positions[i] = swerveModule[i].getPosition();
         return positions;
+    }
+
+    // 取得四個模組的速度與角度狀態    
+    public SwerveModuleState[] getStates() {
+        SwerveModuleState states[] = new SwerveModuleState[4];
+        for(int i = 0; i < 4; i++) 
+            states[i] = swerveModule[i].getState();
+        return states;
     }
 
     public static Drivetrain getInstance() {
@@ -58,25 +65,38 @@ public class Drivetrain {
         return drivetrain;
     }
 
+    // 初始化角度修正    
+    public void initAngleCorrection() {
+        // 計算當前車身速度
+        ChassisSpeeds chassisSpeeds = Constants.kinematics.toChassisSpeeds(getStates());
+        for (SwerveModule module : swerveModule) module.setPosition(0, module.getState().angle.getRadians() + Math.atan2(chassisSpeeds.vxMetersPerSecond * 0.5, chassisSpeeds.vyMetersPerSecond * 0.5));
+    }
 
+    /**
+     * 控制車體運動
+     * @param xSpeed 前後方向速度 [-1, 1]，field-oriented
+     * @param ySpeed 左右方向速度 [-1, 1]，field-oriented
+     * @param rot 旋轉速度 [-1, 1]
+     */
     public void drive(double xSpeed, double ySpeed, double rot) {
         // Field-Oriented Control
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             xSpeed * Constants.maxSpeed, 
             ySpeed * Constants.maxSpeed, 
             rot * Constants.maxAngularSpeed, 
-            gyro.getRotation2d()
+            gyro.getRotation2d() // 使用陀螺儀轉換為場地座標
         );
         
-        // Robot-Relative
+        // Robot-Relative 控制方式 (若需要改成相對座標，可啟用)
         // ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d());
 
-        // 將 ChassisSpeeds 轉成每個模組的目標速度與角度
+        // 將車身速度轉換為每個模組的目標速度與角度
         SwerveModuleState[] states = Constants.kinematics.toSwerveModuleStates(chassisSpeeds);
         
-        // 將車輪速度標準化，避免超過最大速度
+        // 標準化車輪速度
         SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.maxSpeed);
 
-        for(int i = 0; i < 4; i++) swerveModule[i].setDesiredState(states[i]);
+        for(int i = 0; i < 4; i++) 
+            swerveModule[i].setDesiredState(states[i]);
     }
 }

@@ -14,18 +14,22 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public class SwerveModule {
-    private final SparkFlex driveMotor;      // 驅動輪馬達
-    private final SparkMax turnMotor;        // 轉向馬達
+    private final SparkFlex driveMotor;
+    private final SparkMax turnMotor;
 
-    private final RelativeEncoder driveEncoder;  // 驅動馬達編碼器
-    private final RelativeEncoder turnEncoder;   // 轉向馬達編碼器
+    private final RelativeEncoder driveEncoder;
+    private final RelativeEncoder turnEncoder;
 
+    /**
+     * 初始化 Swerve 模組
+     * @param driveID       驅動馬達CAN ID
+     * @param turnID        轉向馬達CAN ID
+     * @param driveInverted 驅動馬達是否反向
+     */
     public SwerveModule(int driveID, int turnID, boolean driveInverted) {
-        // 初始化馬達
         driveMotor = new SparkFlex(driveID, MotorType.kBrushless);
         turnMotor = new SparkMax(turnID, MotorType.kBrushless);
 
-        // 取得編碼器
         driveEncoder = driveMotor.getEncoder();
         turnEncoder = turnMotor.getEncoder();
 
@@ -33,10 +37,10 @@ public class SwerveModule {
         SparkFlexConfig driveConfig = new SparkFlexConfig();
         driveConfig.idleMode(Constants.MotorMode)           // 空轉模式: Brake/Coast
             .inverted(driveInverted)                        // 是否反向
-            .voltageCompensation(12)                        // 電壓補償
-            .smartCurrentLimit(44);                         // 電流限制
+            .voltageCompensation(12)         // 電壓補償，避免電壓下降影響速度
+            .smartCurrentLimit(44);              // 電流限制，保護馬達
 
-        // 設定編碼器轉換因子 (從馬達轉速/位置轉到車輪實際速度/距離)
+        // 編碼器轉換: 馬達轉速/位置 -> 車輪實際速度/距離
         driveConfig.encoder
             .positionConversionFactor(Constants.PositionConversionFactor)
             .velocityConversionFactor(Constants.VelocityConversionFactor);
@@ -66,22 +70,47 @@ public class SwerveModule {
         );
     }
 
-    // 取得 Swerve 模組位置
-    // driveEncoder.getPosition(): 車輪轉過的距離 (米)
-    // turnEncoder.getPosition(): 車輪轉向角度 (rad)
+    /**
+     * 取得模組目前的位置
+     * @return SwerveModulePosition 包含車輪位移與轉向角
+     */
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
-            driveEncoder.getPosition(), 
-            new Rotation2d(turnEncoder.getPosition())
+            driveEncoder.getPosition(),                // 車輪轉過的距離 (米)
+            new Rotation2d(turnEncoder.getPosition())  // 轉向角度 (rad)
         );
     }
 
-    // 設定模組目標狀態
-    public void setDesiredState(SwerveModuleState state) {
-        // 最佳化轉向，避免反轉角度
-        state.optimize(new Rotation2d(turnEncoder.getPosition()));
+    /**
+     * 將模組編碼器歸零或設定特定位置
+     * @param drivePosition 驅動馬達位置
+     * @param turnPosition 轉向馬達位置
+     */
+    public void setPosition(double drivePosition, double turnPosition) {
+        driveEncoder.setPosition(drivePosition);
+        turnEncoder.setPosition(turnPosition);
+    }
 
-        driveMotor.set(state.speedMetersPerSecond / Constants.maxSpeed);
+    /**
+     * 取得模組目前狀態
+     * @return SwerveModuleState 包含車輪速度與角度
+     */
+    public SwerveModuleState getState() {
+        return new SwerveModuleState(
+            driveEncoder.getVelocity(),                 // 車輪速度 (米/秒)
+            new Rotation2d(turnEncoder.getPosition())   // 轉向角 (rad)
+        );
+    }
+
+    /**
+     * 設定模組目標狀態 (速度 + 角度)
+     * @param state 目標 SwerveModuleState
+     */
+    public void setDesiredState(SwerveModuleState state) {
+        // 最佳化轉向角度，避免輪子旋轉超過180°導致反轉
+        state.optimize(new Rotation2d(turnEncoder.getPosition()));
+        
         turnMotor.set(Math.max(-1.0, Math.min(Constants.TurnPID.calculate(turnEncoder.getPosition(), state.angle.getRadians()), 1.0)));
+        driveMotor.set(state.speedMetersPerSecond / Constants.maxSpeed);
     }
 }
