@@ -1,4 +1,4 @@
-package frc.robot.Drivetrain;
+package frc.robot.Subsystem.Drivetrain;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -38,7 +38,7 @@ public class Drivetrain {
         PoseEstimator = 
             new SwerveDrivePoseEstimator(
                 Constants.kinematics,
-                gyro.getRotation2d(),
+                gyro.getRotation2d().unaryMinus(),
                 getPosition(),
                 Constants.InitialPose
             );
@@ -84,7 +84,7 @@ public class Drivetrain {
             xSpeed * Constants.maxSpeed, 
             ySpeed * Constants.maxSpeed, 
             rot * Constants.maxAngularSpeed, 
-            gyro.getRotation2d() // 使用陀螺儀轉換為場地座標
+            gyro.getRotation2d().unaryMinus() // 使用陀螺儀轉換為場地座標
         );
         
         // Robot-Relative 控制方式 (若需要改成相對座標，可啟用)
