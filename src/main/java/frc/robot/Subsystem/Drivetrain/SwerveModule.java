@@ -1,83 +1,111 @@
 package frc.robot.Subsystem.Drivetrain;
 
-import java.util.List;
-
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+
 public class SwerveModule {
-    private final SparkMax driveMotor;
-    private final SparkMax turnMotor;
+    private final SparkMax drivingMotor;
+    private final SparkMax turningMotor;
+    
+    private final SparkMaxConfig drivingConfig;
+    private final SparkMaxConfig turningConfig;
 
-    private final RelativeEncoder driveEncoder;
-    private final RelativeEncoder turnEncoder;
+    private final RelativeEncoder drivingEncoder;
+    private final AbsoluteEncoder turningEncoder;
 
-    private final AbsoluteEncoder absoluteEncoder;
+    private final SparkClosedLoopController drivingPIDController;
+    private final SparkClosedLoopController turningPIDController;
 
-    public SwerveModule(int driveMotorID, int turnMotorID, boolean driveInverted) {
-        driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);
-        turnMotor = new SparkMax(turnMotorID, MotorType.kBrushless);
+    private SwerveModuleState desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
-        driveEncoder = driveMotor.getEncoder();
-        turnEncoder = turnMotor.getEncoder();
+    public SwerveModule(int drivingMotorID, int turingMotorID) {
+        drivingMotor = new SparkMax(drivingMotorID, MotorType.kBrushless);
+        turningMotor = new SparkMax(turingMotorID, MotorType.kBrushless);
 
-        absoluteEncoder = turnMotor.getAbsoluteEncoder();
+        drivingConfig = new SparkMaxConfig();
+        turningConfig = new SparkMaxConfig();
 
-        SparkMaxConfig driveConfig = new SparkMaxConfig();
-        driveConfig.idleMode(Constants.MotorMode)
-            .inverted(driveInverted)
-            .voltageCompensation(12)
-            .smartCurrentLimit(44);
+        drivingConfig.apply(Configs.drivingConfig);
+        turningConfig.apply(Configs.turningConfig);
 
-        SparkMaxConfig turnConfig = new SparkMaxConfig();
-        turnConfig.idleMode(Constants.MotorMode)
-            .inverted(false)
-            .voltageCompensation(12)
-            .smartCurrentLimit(20);
+        drivingEncoder = drivingMotor.getEncoder();
+        turningEncoder = turningMotor.getAbsoluteEncoder();
 
-        driveConfig.encoder
-            .positionConversionFactor(Constants.PositionConversionFactor)
-            .velocityConversionFactor(Constants.VelocityConversionFactor);
+        drivingPIDController = drivingMotor.getClosedLoopController();
+        turningPIDController = turningMotor.getClosedLoopController();
 
-        turnConfig.encoder
-            .positionConversionFactor(Constants.TurnPositionConversionFactor)
-            .velocityConversionFactor(Constants.TurnVelocityConversionFactor);
+        turningConfig.absoluteEncoder.zeroOffset(Constants.AngleOffsetRadiants[(drivingMotorID - 1) % 10]);
 
-        turnConfig.absoluteEncoder
-            .positionConversionFactor(2 * Math.PI)
-            .velocityConversionFactor(2 * Math.PI)
-            .zeroOffset(Constants.AngleOffsetRad)
-            .inverted(false);
-
-        driveMotor.configure(
-            driveConfig, 
-            ResetMode.kResetSafeParameters, 
+        drivingMotor.configure(
+            drivingConfig,
+            ResetMode.kResetSafeParameters,
             PersistMode.kPersistParameters
         );
 
-        turnMotor.configure(
-            turnConfig, 
-            ResetMode.kResetSafeParameters, 
+        turningMotor.configure(
+            turningConfig,
+            ResetMode.kResetSafeParameters,
             PersistMode.kPersistParameters
         );
 
-        turnEncoder.setPosition(absoluteEncoder.getPosition());
+        desiredState.angle = new Rotation2d(turningEncoder.getPosition());
+        drivingEncoder.setPosition(0);
     }
 
-    public List<Double> getPosition() {
-        return List.of(driveEncoder.getPosition(), turnEncoder.getPosition());
+    public SwerveModuleState getState() {
+        return new SwerveModuleState(
+            drivingEncoder.getVelocity(),
+            new Rotation2d(turningEncoder.getPosition())
+        );
     }
 
-    public List<Double> getVelocity() {
-        return List.of(driveEncoder.getVelocity(), turnEncoder.getVelocity());
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(
+            drivingEncoder.getPosition(),
+            new Rotation2d(turningEncoder.getPosition())
+        );
     }
 
-    public List<SparkMax> getMotor() {
-        return List.of(driveMotor, turnMotor);
+    public void resetEncoders() {
+        drivingEncoder.setPosition(0);
+    }
+
+    public void stop() {
+        drivingMotor.stopMotor();
+        turningMotor.stopMotor();
+    }
+    
+    public void setDesiredState(SwerveModuleState state) {
+        if (Math.abs(state.speedMetersPerSecond) < 0.01) {
+            stop();
+            return;
+        }
+
+        SwerveModuleState correctedDesiredState = new SwerveModuleState(state.speedMetersPerSecond, state.angle);
+
+        correctedDesiredState.optimize(new Rotation2d(turningEncoder.getPosition()));
+
+        drivingPIDController.setReference(
+            correctedDesiredState.speedMetersPerSecond,
+            ControlType.kVelocity
+        );
+
+        turningPIDController.setReference(
+            correctedDesiredState.angle.getRadians(),
+            ControlType.kPosition
+        );
+
+        desiredState = state;        
     }
 }
