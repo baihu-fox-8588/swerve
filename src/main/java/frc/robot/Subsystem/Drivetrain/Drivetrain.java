@@ -26,26 +26,27 @@ public class Drivetrain extends SubsystemBase {
         }
 
         poseEstimator = new SwerveDrivePoseEstimator(
-                Constants.kinematics,
-                gyro.getRotation(),
-                getModulePositions(),
-                Constants.InitialPose);
+            Constants.kinematics,
+            gyro.getRotation(),
+            getModulePositions(),
+            Constants.InitialPose
+        );
     }
 
     @Override
     public void periodic() {
         poseEstimator.update(
-                gyro.getRotation(),
+            gyro.getRotation(),
             getModulePositions()
         );
     }
 
     private SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[] {
-                swerveModules[0].getPosition(),
-                swerveModules[1].getPosition(),
-                swerveModules[2].getPosition(),
-                swerveModules[3].getPosition()
+            swerveModules[0].getPosition(),
+            swerveModules[1].getPosition(),
+            swerveModules[2].getPosition(),
+            swerveModules[3].getPosition()
         };
     }
 
@@ -55,15 +56,14 @@ public class Drivetrain extends SubsystemBase {
 
     public void resetPose(Pose2d pose) {
         poseEstimator.resetPosition(
-                gyro.getRotation(),
-                getModulePositions(),
+            gyro.getRotation(),
+            getModulePositions(),
             pose
         );
     }
 
     public void resetEncoders() {
-        for (SwerveModule module : swerveModules)
-            module.resetEncoders();
+        for (SwerveModule module : swerveModules) module.resetEncoders();
     }
 
     public double getHeading() {
@@ -82,8 +82,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        for (int i = 0; i < swerveModules.length; i++)
-            swerveModules[i].setDesiredState(desiredStates[i]);
+        for (int i = 0; i < swerveModules.length; i++) swerveModules[i].setDesiredState(desiredStates[i]);
     }
 
     public static Drivetrain getInstance() {

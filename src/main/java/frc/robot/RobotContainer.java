@@ -17,8 +17,8 @@ public class RobotContainer {
 
 	public RobotContainer() {
 		drivetrain.setDefaultCommand(
-				DriveCommands.driveCommand(
-						drivetrain,
+			DriveCommands.driveCommand(
+				drivetrain,
 				() -> getChassisSpeeds()
 			)
 		);
@@ -31,15 +31,18 @@ public class RobotContainer {
 
 		if (isFieldRelative) {
 			return ChassisSpeeds.fromFieldRelativeSpeeds(
-					MathUtil.applyDeadband(xSpeed, 0.1) * Constants.maxSpeed,
-					MathUtil.applyDeadband(ySpeed, 0.1) * Constants.maxSpeed,
-					MathUtil.applyDeadband(rot, 0.1) * Constants.maxAngularSpeed,
-					drivetrain.getPose().getRotation());
-		} else {
+				MathUtil.applyDeadband(xSpeed, 0.1) * Constants.maxSpeed,
+				MathUtil.applyDeadband(ySpeed, 0.1) * Constants.maxSpeed,
+				MathUtil.applyDeadband(rot, 0.1) * Constants.maxAngularSpeed,	
+				drivetrain.getPose().getRotation()
+			);
+		} 
+		else {
 			return new ChassisSpeeds(
-					MathUtil.applyDeadband(xSpeed, 0.1) * Constants.maxSpeed,
-					MathUtil.applyDeadband(ySpeed, 0.1) * Constants.maxSpeed,
-					MathUtil.applyDeadband(rot, 0.1) * Constants.maxAngularSpeed);
+				MathUtil.applyDeadband(xSpeed, 0.1) * Constants.maxSpeed,
+				MathUtil.applyDeadband(ySpeed, 0.1) * Constants.maxSpeed,
+				MathUtil.applyDeadband(rot, 0.1) * Constants.maxAngularSpeed
+			);
 		}
 	}
 

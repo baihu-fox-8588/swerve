@@ -32,20 +32,20 @@ public class Constants {
     public static final double maxAngularSpeed = 11000 / TurnGearRatio * TurnVelocityConversionFactor;
 
     public static final double[] AngleOffsetRadiants = {
-            Math.toRadians(0),
-            Math.toRadians(0),
-            Math.toRadians(0),
-            Math.toRadians(0)
+        Math.toRadians(0),
+        Math.toRadians(0),
+        Math.toRadians(0),
+        Math.toRadians(0)
     };
 
-    public static final double TrackWidth = 0.635; // 左右輪距離
-    public static final double WheelBase = 0.635; // 前後輪距離
+    public static final double TrackWidth = 0.635;
+    public static final double WheelBase = 0.635;
 
     public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-            new Translation2d(WheelBase / 2, TrackWidth / 2), // 左前
-            new Translation2d(WheelBase / 2, -TrackWidth / 2), // 右前
-            new Translation2d(-WheelBase / 2, TrackWidth / 2), // 左後
-            new Translation2d(-WheelBase / 2, -TrackWidth / 2) // 右後
+        new Translation2d(WheelBase / 2, TrackWidth / 2),
+        new Translation2d(WheelBase / 2, -TrackWidth / 2),
+        new Translation2d(-WheelBase / 2, TrackWidth / 2),
+        new Translation2d(-WheelBase / 2, -TrackWidth / 2)
     );
 
     public static final Pose2d InitialPose = new Pose2d(0, 0, Rotation2d.kZero);

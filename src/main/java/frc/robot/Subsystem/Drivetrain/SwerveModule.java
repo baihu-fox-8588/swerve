@@ -48,8 +48,8 @@ public class SwerveModule {
         turningConfig.absoluteEncoder.zeroOffset(Constants.AngleOffsetRadiants[(drivingMotorID - 1) % 10]);
 
         drivingMotor.configure(
-                drivingConfig,
-                ResetMode.kResetSafeParameters,
+            drivingConfig,
+            ResetMode.kResetSafeParameters,
             PersistMode.kPersistParameters
         );
 
@@ -65,14 +65,14 @@ public class SwerveModule {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-                drivingEncoder.getVelocity(),
+            drivingEncoder.getVelocity(),
             new Rotation2d(turningEncoder.getPosition())
         );
     }
 
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
-                drivingEncoder.getPosition(),
+            drivingEncoder.getPosition(),
             new Rotation2d(turningEncoder.getPosition())
         );
     }
