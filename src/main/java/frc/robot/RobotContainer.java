@@ -26,8 +26,8 @@ public class RobotContainer {
 
 	private ChassisSpeeds getChassisSpeeds() {
 		double xSpeed = -joystick.getY();
-		double ySpeed = -joystick.getX();
-		double rot = -joystick.getRawAxis(4);
+		double ySpeed = joystick.getX();
+		double rot = joystick.getRawAxis(4);
 
 		if (isFieldRelative) {
 			return ChassisSpeeds.fromFieldRelativeSpeeds(
