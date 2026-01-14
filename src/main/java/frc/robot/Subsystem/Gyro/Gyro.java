@@ -18,6 +18,9 @@ public class Gyro {
         return ahrs.getRotation2d().unaryMinus();
     }
 
+    public double getRate() {
+        return ahrs.getRate();
+    }
     public void reset() {
         ahrs.reset();
     }
