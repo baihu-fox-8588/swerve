@@ -86,13 +86,13 @@ public class SwerveModule {
         turningMotor.stopMotor();
     }
     
-    public void setDesiredState(SwerveModuleState state) {
-        if (Math.abs(state.speedMetersPerSecond) < 0.01) {
+    public void setDesiredState(SwerveModuleState desiredState) {
+        if (Math.abs(desiredState.speedMetersPerSecond) < 0.01) {
             stop();
             return;
         }
 
-        SwerveModuleState correctedDesiredState = new SwerveModuleState(state.speedMetersPerSecond, state.angle);
+        SwerveModuleState correctedDesiredState = new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
 
         correctedDesiredState.optimize(new Rotation2d(turningEncoder.getPosition()));
 
@@ -106,6 +106,6 @@ public class SwerveModule {
             ControlType.kPosition
         );
 
-        desiredState = state;        
+        this.desiredState = desiredState;        
     }
 }
