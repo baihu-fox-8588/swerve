@@ -17,7 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 public class SwerveModule {
     private final SparkMax drivingMotor;
     private final SparkMax turningMotor;
-    
+
     private final SparkMaxConfig drivingConfig;
     private final SparkMaxConfig turningConfig;
 
@@ -29,9 +29,9 @@ public class SwerveModule {
 
     private SwerveModuleState desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
-    public SwerveModule(int drivingMotorID, int turingMotorID) {
+    public SwerveModule(int drivingMotorID, int turningMotorID) {
         drivingMotor = new SparkMax(drivingMotorID, MotorType.kBrushless);
-        turningMotor = new SparkMax(turingMotorID, MotorType.kBrushless);
+        turningMotor = new SparkMax(turningMotorID, MotorType.kBrushless);
 
         drivingConfig = new SparkMaxConfig();
         turningConfig = new SparkMaxConfig();
@@ -48,8 +48,8 @@ public class SwerveModule {
         turningConfig.absoluteEncoder.zeroOffset(Constants.AngleOffsetRadiants[(drivingMotorID - 1) % 10]);
 
         drivingMotor.configure(
-            drivingConfig,
-            ResetMode.kResetSafeParameters,
+                drivingConfig,
+                ResetMode.kResetSafeParameters,
             PersistMode.kPersistParameters
         );
 
@@ -65,14 +65,14 @@ public class SwerveModule {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-            drivingEncoder.getVelocity(),
+                drivingEncoder.getVelocity(),
             new Rotation2d(turningEncoder.getPosition())
         );
     }
 
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
-            drivingEncoder.getPosition(),
+                drivingEncoder.getPosition(),
             new Rotation2d(turningEncoder.getPosition())
         );
     }
@@ -85,10 +85,10 @@ public class SwerveModule {
         drivingMotor.stopMotor();
         turningMotor.stopMotor();
     }
-    
+
     public void setDesiredState(SwerveModuleState desiredState) {
         if (Math.abs(desiredState.speedMetersPerSecond) < 0.01) {
-            stop();
+            drivingMotor.stopMotor();
             return;
         }
 
@@ -106,6 +106,6 @@ public class SwerveModule {
             ControlType.kPosition
         );
 
-        this.desiredState = desiredState;        
+        this.desiredState = desiredState;
     }
 }

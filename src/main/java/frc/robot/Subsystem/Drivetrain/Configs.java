@@ -9,34 +9,34 @@ public class Configs {
 
     static {
         drivingConfig.idleMode(Constants.MotorMode)
-            .voltageCompensation(12)
-            .smartCurrentLimit(44);
+                .voltageCompensation(12)
+                .smartCurrentLimit(44);
 
         turningConfig.idleMode(Constants.MotorMode)
-            .voltageCompensation(12)
-            .smartCurrentLimit(20);
+                .voltageCompensation(12)
+                .smartCurrentLimit(20);
 
         drivingConfig.encoder
-            .positionConversionFactor(Constants.PositionConversionFactor)
-            .velocityConversionFactor(Constants.VelocityConversionFactor);
+                .positionConversionFactor(Constants.PositionConversionFactor)
+                .velocityConversionFactor(Constants.VelocityConversionFactor);
 
         turningConfig.absoluteEncoder
-            .positionConversionFactor(Constants.TurnPositionConversionFactor)
-            .velocityConversionFactor(Constants.TurnVelocityConversionFactor)
-            .inverted(true);
+                .positionConversionFactor(Constants.TurnPositionConversionFactor)
+                .velocityConversionFactor(Constants.TurnVelocityConversionFactor)
+                .inverted(true);
 
         drivingConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.04, 0, 0)
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .pid(0.04, 0, 0)
             .velocityFF(1 / Constants.maxSpeed)
-            .outputRange(-1, 1);
+                .outputRange(-1, 1);
 
         turningConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-            .pid(1.0, 0, 0)
-            .outputRange(-1, 1)
-            .positionWrappingEnabled(true)
-            .positionWrappingInputRange(0, 2 * Math.PI);
+                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                .pid(1.0, 0, 0)
+                .outputRange(-1, 1)
+                .positionWrappingEnabled(true)
+                .positionWrappingInputRange(0, 2 * Math.PI);
 
     }
 }
