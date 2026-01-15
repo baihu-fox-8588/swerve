@@ -21,7 +21,8 @@ public class Drivetrain extends SubsystemBase {
         for (int i = 0; i < 4; i++) {
             swerveModules[i] = new SwerveModule(
                 Constants.drivingMotorID[i],
-                Constants.turningMotorID[i]
+                Constants.turningMotorID[i],
+                Constants.AngleOffsetRadiants[i]
             );
         }
 
