@@ -17,17 +17,14 @@ public class SparkMaxConfigFactory extends SparkMaxConfig {
             .velocityConversionFactor(velocityConversionFactor);
     }
 
-    public void setAbsoluteEncoder(double positionConversionFactor, double velocityConversionFactor, boolean inverted) {
+    public void setAbsoluteEncoder(double positionConversionFactor, double velocityConversionFactor, double angleOffset, boolean inverted) {
         this.absoluteEncoder
             .positionConversionFactor(positionConversionFactor)
             .velocityConversionFactor(velocityConversionFactor)
+            .zeroOffset(angleOffset)
             .inverted(inverted);
 
         this.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
-    }
-
-    public void setZeroOffset(double offset) {
-        this.absoluteEncoder.zeroOffset(offset);
     }
 
     public void setPID(double p, double i, double d) {
@@ -41,7 +38,7 @@ public class SparkMaxConfigFactory extends SparkMaxConfig {
             .outputRange(-1, 1);
     }
 
-    public void setpositionWrapping(double inputMin, double inputMax) {
+    public void setPositionWrapping(double inputMin, double inputMax) {
         this.closedLoop
             .positionWrappingEnabled(true)
             .positionWrappingInputRange(inputMin, inputMax);
