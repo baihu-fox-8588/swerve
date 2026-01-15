@@ -26,6 +26,10 @@ public class SparkMaxConfigFactory extends SparkMaxConfig {
         this.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     }
 
+    public void setPID(double p, double i, double d) {
+        setPID(p, i, d, 0);
+    }
+
     public void setPID(double p, double i, double d, double ff) {
         this.closedLoop
             .pid(p, i, d)
