@@ -4,8 +4,9 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Gyro {
+public class Gyro extends SubsystemBase {
     public static Gyro gyro;
 
     private final AHRS ahrs;
