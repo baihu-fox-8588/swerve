@@ -8,14 +8,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class DriveCommands {
-    public static Command zeroHeadingCommand(Drivetrain drivetrain) {
-        return drivetrain.runOnce(
-            () -> {
-                drivetrain.gyro.reset();
-            }
-        ).withName("ZeroHeadingCommand");
-    }
-
     public static Command setXCommand(Drivetrain drivetrain) {
         return drivetrain.run(
             () -> {
