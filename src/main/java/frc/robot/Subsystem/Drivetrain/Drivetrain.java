@@ -42,12 +42,9 @@ public class Drivetrain extends SubsystemBase {
     }
 
     private SwerveModulePosition[] getModulePositions() {
-        return new SwerveModulePosition[] {
-            swerveModules[0].getPosition(),
-            swerveModules[1].getPosition(),
-            swerveModules[2].getPosition(),
-            swerveModules[3].getPosition()
-        };
+        SwerveModulePosition[] positions = new SwerveModulePosition[4];
+        for (int i = 0; i < 4; i++) positions[i] = swerveModules[i].getPosition();
+        return positions;
     }
 
     public Pose2d getPose() {
