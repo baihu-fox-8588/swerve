@@ -13,7 +13,7 @@ public class Drivetrain extends SubsystemBase {
     private static Drivetrain drivetrain;
 
     private final SwerveModule[] swerveModules = new SwerveModule[4];
-    public SwerveDrivePoseEstimator poseEstimator;
+    private final SwerveDrivePoseEstimator poseEstimator;
 
     Gyro gyro = Gyro.getInstance();
 
@@ -62,14 +62,6 @@ public class Drivetrain extends SubsystemBase {
 
     public void resetEncoders() {
         for (SwerveModule module : swerveModules) module.resetEncoders();
-    }
-
-    public double getHeading() {
-        return gyro.getRotation().getDegrees();
-    }
-
-    public double getTurnRate() {
-        return gyro.getRate();
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
