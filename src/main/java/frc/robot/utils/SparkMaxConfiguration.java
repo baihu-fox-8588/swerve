@@ -3,10 +3,12 @@ package frc.robot.utils;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
+import frc.robot.constants.RobotConstants;
+
 public class SparkMaxConfiguration extends SparkMaxConfig {
     public SparkMaxConfiguration(int currentLimit, boolean isInverted) {
-        this.idleMode(Constants.motorMode)
-            .voltageCompensation(Constants.voltageCompensation)
+        this.idleMode(RobotConstants.motorMode)
+            .voltageCompensation(RobotConstants.voltageCompensation)
             .smartCurrentLimit(currentLimit)
             .inverted(isInverted);
     }

@@ -13,7 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.drivetrainConstants;
+import frc.robot.constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain.module.SwerveModule;
 import frc.robot.subsystems.Gyro.Gyro;
 
@@ -37,17 +37,17 @@ public class Drivetrain extends SubsystemBase {
         
         for (int i = 0; i < 4; i++) {
             swerveModules[i] = new SwerveModule(
-                drivetrainConstants.drivingMotorID[i],
-                drivetrainConstants.turningMotorID[i],
-                drivetrainConstants.AngleOffsetRadiants[i]
+                DrivetrainConstants.drivingMotorID[i],
+                DrivetrainConstants.turningMotorID[i],
+                DrivetrainConstants.AngleOffsetRadiants[i]
             );
         }
 
         poseEstimator = new SwerveDrivePoseEstimator(
-            drivetrainConstants.kinematics,
+            DrivetrainConstants.kinematics,
             gyro.getRotation(),
             getModulePositions(),
-            drivetrainConstants.InitialPose
+            DrivetrainConstants.InitialPose
         );
 
         AutoBuilder.configure(
@@ -85,7 +85,7 @@ public class Drivetrain extends SubsystemBase {
     private ChassisSpeeds getRelativeSpeeds() {
         SwerveModuleState[] states = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) states[i] = swerveModules[i].getState();
-        return drivetrainConstants.kinematics.toChassisSpeeds(states);
+        return DrivetrainConstants.kinematics.toChassisSpeeds(states);
     }
 
     public Pose2d getPose() {
@@ -107,8 +107,8 @@ public class Drivetrain extends SubsystemBase {
     public void drive(ChassisSpeeds chassisSpeeds) {
         ChassisSpeeds discretizedSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
 
-        var swerveModuleStates = drivetrainConstants.kinematics.toSwerveModuleStates(discretizedSpeeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, drivetrainConstants.maxSpeed);
+        var swerveModuleStates = DrivetrainConstants.kinematics.toSwerveModuleStates(discretizedSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DrivetrainConstants.maxSpeed);
 
         setModuleStates(swerveModuleStates);
     }
