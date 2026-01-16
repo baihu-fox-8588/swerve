@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Drivetrain;
+package frc.robot.subsystems.Drivetrain.module;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
@@ -36,13 +36,13 @@ public class SwerveModule {
         turningPIDController = turningMotor.getClosedLoopController();
 
         drivingMotor.configure(
-            DrivetrainConfigs.drivingConfig(),
+            SwerveConfigs.drivingConfig(),
             ResetMode.kResetSafeParameters,
             PersistMode.kPersistParameters
         );
 
         turningMotor.configure(
-            DrivetrainConfigs.turningConfig(angleOffset),
+            SwerveConfigs.turningConfig(angleOffset),
             ResetMode.kResetSafeParameters,
             PersistMode.kPersistParameters
         );

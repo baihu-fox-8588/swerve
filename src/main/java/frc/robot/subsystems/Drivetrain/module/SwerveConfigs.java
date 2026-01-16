@@ -1,9 +1,9 @@
-package frc.robot.subsystems.Drivetrain;
+package frc.robot.subsystems.Drivetrain.module;
 
 import frc.robot.constants.drivetrainConstants;
 import frc.robot.utils.SparkMaxConfiguration;
 
-public class DrivetrainConfigs {
+public class SwerveConfigs {
     public static SparkMaxConfiguration drivingConfig() {
         SparkMaxConfiguration drivingConfig = new SparkMaxConfiguration(44, false);
         drivingConfig.setEncoder(drivetrainConstants.PositionConversionFactor, drivetrainConstants.VelocityConversionFactor);
