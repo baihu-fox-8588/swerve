@@ -1,11 +1,17 @@
 package frc.robot.Subsystem.Drivetrain;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Subsystem.Gyro.Gyro;
 
@@ -15,9 +21,18 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModule[] swerveModules = new SwerveModule[4];
     private final SwerveDrivePoseEstimator poseEstimator;
 
+    private RobotConfig robotConfig;
+
     Gyro gyro = Gyro.getInstance();
 
     public Drivetrain() {
+        try {
+            robotConfig = RobotConfig.fromGUISettings();
+        }
+        catch (Exception e) {
+            DriverStation.reportError("PathPlanner Config Load Failed: " + e.getMessage(), true);
+        }
+        
         for (int i = 0; i < 4; i++) {
             swerveModules[i] = new SwerveModule(
                 Constants.drivingMotorID[i],
@@ -31,6 +46,23 @@ public class Drivetrain extends SubsystemBase {
             gyro.getRotation(),
             getModulePositions(),
             Constants.InitialPose
+        );
+
+        AutoBuilder.configure(
+            this::getPose,
+            this::resetPose,
+            this::getRelativeSpeeds,
+            this::drive,
+            new PPHolonomicDriveController(
+                new PIDConstants(5.0, 0, 0),
+                new PIDConstants(5.0, 0, 0)
+            ),
+            robotConfig,
+            () -> {
+                var alliance = DriverStation.getAlliance();
+                return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+            },
+            this
         );
     }
 
@@ -46,6 +78,12 @@ public class Drivetrain extends SubsystemBase {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for (int i = 0; i < 4; i++) positions[i] = swerveModules[i].getPosition();
         return positions;
+    }
+
+    private ChassisSpeeds getRelativeSpeeds() {
+        SwerveModuleState[] states = new SwerveModuleState[4];
+        for (int i = 0; i < 4; i++) states[i] = swerveModules[i].getState();
+        return Constants.kinematics.toChassisSpeeds(states);
     }
 
     public Pose2d getPose() {
@@ -65,7 +103,9 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
-        var swerveModuleStates = Constants.kinematics.toSwerveModuleStates(chassisSpeeds);
+        ChassisSpeeds discretizedSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+
+        var swerveModuleStates = Constants.kinematics.toSwerveModuleStates(discretizedSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.maxSpeed);
 
         setModuleStates(swerveModuleStates);
