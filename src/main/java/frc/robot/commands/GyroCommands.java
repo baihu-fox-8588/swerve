@@ -1,6 +1,7 @@
-package frc.robot.Subsystem.Gyro;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Gyro.Gyro;
 
 public class GyroCommands {
     public static Command resetGyroCommand(Gyro gyro) {

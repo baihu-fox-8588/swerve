@@ -1,4 +1,4 @@
-package frc.robot.Subsystem.Gyro;
+package frc.robot.subsystems.Gyro;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;

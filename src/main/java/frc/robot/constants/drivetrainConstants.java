@@ -1,4 +1,4 @@
-package frc.robot.Subsystem.Drivetrain;
+package frc.robot.constants;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
-public class Constants {
+public class drivetrainConstants {
     public static final int drivingMotorID[] = {11, 12, 13, 14};
     public static final int turningMotorID[] = {21, 22, 23, 24};
 
