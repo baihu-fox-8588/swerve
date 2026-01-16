@@ -5,8 +5,8 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 public class SparkMaxConfiguration extends SparkMaxConfig {
     public SparkMaxConfiguration(int currentLimit, boolean isInverted) {
-        this.idleMode(IdleMode.kBrake)
-            .voltageCompensation(12)
+        this.idleMode(Constants.motorMode)
+            .voltageCompensation(Constants.voltageCompensation)
             .smartCurrentLimit(currentLimit)
             .inverted(isInverted);
     }
