@@ -1,6 +1,6 @@
 package frc.robot.Subsystem.Drivetrain;
 
-import frc.robot.Infrastructure.SparkMaxConfiguration;
+import frc.robot.utils.SparkMaxConfiguration;
 
 public class DrivetrainConfigs {
     public static SparkMaxConfiguration drivingConfig() {

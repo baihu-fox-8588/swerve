@@ -1,4 +1,4 @@
-package frc.robot.Infrastructure;
+package frc.robot.utils;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
