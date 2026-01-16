@@ -2,26 +2,13 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain.Drivetrain;
 
 public class DriveCommands {
     public static Command setXCommand(Drivetrain drivetrain) {
-        return drivetrain.run(
-            () -> {
-                var swerveModuleStates = new SwerveModuleState[] {
-                    new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
-                    new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
-                    new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
-                    new SwerveModuleState(0, Rotation2d.fromDegrees(45))
-                };
-
-                drivetrain.setModuleStates(swerveModuleStates);
-            }
-        ).withName("XCommand");
+        return drivetrain.run(drivetrain::stopWithXMode).withName("XCommand");
     }
 
     public static Command driveCommand(Drivetrain drivetrain, Supplier<ChassisSpeeds> chassisSpeeds) {

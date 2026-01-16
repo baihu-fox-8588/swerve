@@ -7,6 +7,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -102,6 +103,17 @@ public class Drivetrain extends SubsystemBase {
 
     public void resetEncoders() {
         for (SwerveModule module : swerveModules) module.resetEncoders();
+    }
+
+    public void stopWithXMode() {
+        var swerveModuleStates = new SwerveModuleState[] {
+            new SwerveModuleState(0, Rotation2d.fromRadians(45)),
+            new SwerveModuleState(0, Rotation2d.fromRadians(-45)),
+            new SwerveModuleState(0, Rotation2d.fromRadians(-45)),
+            new SwerveModuleState(0, Rotation2d.fromRadians(45))
+        };
+
+        setModuleStates(swerveModuleStates);
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
