@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DriveCommands;
-import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.drivetrainConstants;
 import frc.robot.subsystems.Drivetrain.Drivetrain;
 
 public class RobotContainer {
@@ -31,17 +31,17 @@ public class RobotContainer {
 
 		if (isFieldRelative) {
 			return ChassisSpeeds.fromFieldRelativeSpeeds(
-				MathUtil.applyDeadband(xSpeed, 0.1) * DrivetrainConstants.maxSpeed,
-				MathUtil.applyDeadband(ySpeed, 0.1) * DrivetrainConstants.maxSpeed,
-				MathUtil.applyDeadband(rot, 0.1) * DrivetrainConstants.maxAngularSpeed,	
+				MathUtil.applyDeadband(xSpeed, 0.1) * drivetrainConstants.maxSpeed,
+				MathUtil.applyDeadband(ySpeed, 0.1) * drivetrainConstants.maxSpeed,
+				MathUtil.applyDeadband(rot, 0.1) * drivetrainConstants.maxAngularSpeed,	
 				drivetrain.getPose().getRotation()
 			);
 		} 
 		else {
 			return new ChassisSpeeds(
-				MathUtil.applyDeadband(xSpeed, 0.1) * DrivetrainConstants.maxSpeed,
-				MathUtil.applyDeadband(ySpeed, 0.1) * DrivetrainConstants.maxSpeed,
-				MathUtil.applyDeadband(rot, 0.1) * DrivetrainConstants.maxAngularSpeed
+				MathUtil.applyDeadband(xSpeed, 0.1) * drivetrainConstants.maxSpeed,
+				MathUtil.applyDeadband(ySpeed, 0.1) * drivetrainConstants.maxSpeed,
+				MathUtil.applyDeadband(rot, 0.1) * drivetrainConstants.maxAngularSpeed
 			);
 		}
 	}

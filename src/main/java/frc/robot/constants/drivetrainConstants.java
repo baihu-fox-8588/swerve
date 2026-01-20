@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
-public class DrivetrainConstants {
+public class drivetrainConstants { 
     public static final int drivingMotorID[] = {11, 12, 13, 14};
     public static final int turningMotorID[] = {21, 22, 23, 24};
 
