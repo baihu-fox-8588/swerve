@@ -13,7 +13,7 @@ public class SwerveConfigs {
 
     public static SparkMaxConfiguration turningConfig(double angleOffset) {
         SparkMaxConfiguration turningConfig = new SparkMaxConfiguration(20, false);
-        turningConfig.setAbsoluteEncoder(DrivetrainConstants.TurnPositionConversionFactor, DrivetrainConstants.VelocityConversionFactor, angleOffset, false);
+        turningConfig.setAbsoluteEncoder(DrivetrainConstants.TurnPositionConversionFactor, DrivetrainConstants.VelocityConversionFactor, angleOffset, true);
         turningConfig.setPID(1.0, 0, 0);
         turningConfig.setPositionWrapping(-Math.PI, Math.PI);
         return turningConfig;

@@ -36,14 +36,14 @@ public class SwerveModule {
         turningPIDController = turningMotor.getClosedLoopController();
 
         drivingMotor.configure(
-            SwerveConfigs.drivingConfig(),
-            ResetMode.kResetSafeParameters,
+                SwerveConfigs.drivingConfig(),
+                ResetMode.kResetSafeParameters,
             PersistMode.kPersistParameters
         );
 
         turningMotor.configure(
-            SwerveConfigs.turningConfig(angleOffset),
-            ResetMode.kResetSafeParameters,
+                SwerveConfigs.turningConfig(angleOffset),
+                ResetMode.kResetSafeParameters,
             PersistMode.kPersistParameters
         );
 
@@ -53,14 +53,14 @@ public class SwerveModule {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-            drivingEncoder.getVelocity(),
+                drivingEncoder.getVelocity(),
             new Rotation2d(turningEncoder.getPosition())
         );
     }
 
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
-            drivingEncoder.getPosition(),
+                drivingEncoder.getPosition(),
             new Rotation2d(turningEncoder.getPosition())
         );
     }
@@ -80,12 +80,12 @@ public class SwerveModule {
         correctedDesiredState.optimize(new Rotation2d(turningEncoder.getPosition()));
 
         drivingPIDController.setReference(
-            correctedDesiredState.speedMetersPerSecond,
+                correctedDesiredState.speedMetersPerSecond,
             ControlType.kVelocity
         );
 
         turningPIDController.setReference(
-            correctedDesiredState.angle.getRadians(),
+                correctedDesiredState.angle.getRadians(),
             ControlType.kPosition
         );
 
