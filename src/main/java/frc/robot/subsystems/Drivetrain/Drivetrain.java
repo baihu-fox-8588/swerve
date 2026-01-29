@@ -31,11 +31,10 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain() {
         try {
             robotConfig = RobotConfig.fromGUISettings();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             DriverStation.reportError("PathPlanner Config Load Failed: " + e.getMessage(), true);
         }
-        
+
         for (int i = 0; i < 4; i++) {
             swerveModules[i] = new SwerveModule(
                 DrivetrainConstants.drivingMotorID[i],
@@ -107,10 +106,10 @@ public class Drivetrain extends SubsystemBase {
 
     public void stopWithXMode() {
         var swerveModuleStates = new SwerveModuleState[] {
-            new SwerveModuleState(0, Rotation2d.fromRadians(45)),
-            new SwerveModuleState(0, Rotation2d.fromRadians(-45)),
-            new SwerveModuleState(0, Rotation2d.fromRadians(-45)),
-            new SwerveModuleState(0, Rotation2d.fromRadians(45))
+            new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(45))
         };
 
         setModuleStates(swerveModuleStates);
