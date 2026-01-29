@@ -32,10 +32,10 @@ public class DrivetrainConstants {
     public static final double maxAngularSpeed = 11000 / TurnGearRatio * TurnVelocityConversionFactor;
 
     public static final double[] AngleOffsetRadiants = {
-        Math.toRadians(0),
-        Math.toRadians(0),
-        Math.toRadians(0),
-        Math.toRadians(0)
+        0.6858476,
+        0.5092767,
+        0.8244288,
+        0.6340491
     };
 
     public static final double TrackWidth = 0.635;
