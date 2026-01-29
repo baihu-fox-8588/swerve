@@ -17,6 +17,8 @@ public class SparkMaxConfiguration extends SparkMaxConfig {
         this.encoder
             .positionConversionFactor(positionConversionFactor)
             .velocityConversionFactor(velocityConversionFactor);
+
+        this.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     }
 
     public void setAbsoluteEncoder(double positionConversionFactor, double velocityConversionFactor, double angleOffset, boolean inverted) {
