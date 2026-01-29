@@ -16,18 +16,20 @@ public class Gyro extends SubsystemBase {
     }
 
     public Rotation2d getRotation() {
-        return ahrs.getRotation2d().unaryMinus();
+        return ahrs.getRotation2d();
     }
 
     public double getRate() {
         return ahrs.getRate();
     }
+
     public void reset() {
         ahrs.reset();
     }
 
     public static Gyro getInstance() {
-        if (gyro == null) gyro = new Gyro();
+        if (gyro == null)
+            gyro = new Gyro();
         return gyro;
     }
 }
