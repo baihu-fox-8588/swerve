@@ -1,7 +1,7 @@
 package frc.robot.utils;
 
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import frc.robot.constants.RobotConstants;
 
@@ -38,8 +38,8 @@ public class SparkMaxConfiguration extends SparkMaxConfig {
     public void setPID(double p, double i, double d, double ff) {
         this.closedLoop
             .pid(p, i, d)
-            .velocityFF(ff)
-            .outputRange(-1, 1);
+            .outputRange(-1, 1)
+            .feedForward.kV(ff);
     }
 
     public void setPositionWrapping(double inputMin, double inputMax) {
